@@ -22,9 +22,11 @@ def registrar_intervencion():
     etapa_id = st.selectbox("Etapa", [e["id"] for e in etapas],
                              format_func=lambda eid: next(e["nombre"] for e in etapas if e["id"] == eid))
 
-    componentes = listar("componentes", filtros={"etapa_id": etapa_id}, orden="nombre")
+    area_id = st.selectbox("Área", ["Mecánica", "Eléctrica", "Neumática", "Electrónica"])
+
+    componentes = listar("componentes", filtros={"etapa_id": etapa_id, "area": area_id}, orden="nombre")
     if not componentes:
-        st.warning("Esta etapa no tiene componentes registrados.")
+        st.warning("Esta etapa no tiene componentes registrados en esa área.")
         return
     componente_id = st.selectbox("Componente", [c["id"] for c in componentes],
                                   format_func=lambda cid: next(c["nombre"] for c in componentes if c["id"] == cid))

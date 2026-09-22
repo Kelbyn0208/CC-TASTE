@@ -20,7 +20,7 @@ def _lista_repuestos_con_etiqueta():
     for r in repuestos:
         c = componente_por_id.get(r["componente_id"], {})
         e = etapa_por_id.get(c.get("etapa_id"), {})
-        etiqueta = f"{e.get('nombre', '?')} > {c.get('nombre', '?')} > {r['nombre']}"
+        etiqueta = f"{e.get('nombre', '?')} > {c.get('area', '?')} > {c.get('nombre', '?')} > {r['nombre']}"
         opciones.append((etiqueta, r))
     opciones.sort(key=lambda x: x[0])
     return opciones

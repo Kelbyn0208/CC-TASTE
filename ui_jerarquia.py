@@ -90,6 +90,9 @@ def gestionar_etapas():
         st.rerun()
 
 
+AREAS = ["Mecánica", "Eléctrica", "Neumática", "Electrónica"]
+
+
 def gestionar_componentes():
     st.markdown("#### Componentes")
     equipos = listar("equipos", orden="nombre")
@@ -106,18 +109,23 @@ def gestionar_componentes():
     etapa_id = st.selectbox("Etapa", [e["id"] for e in etapas],
                              format_func=lambda eid: next(e["nombre"] for e in etapas if e["id"] == eid),
                              key="etapa_para_componentes")
+    area_filtro = st.selectbox("Área", ["Todas"] + AREAS, key="area_para_componentes")
 
-    componentes = listar("componentes", filtros={"etapa_id": etapa_id}, orden="nombre")
+    filtros_comp = {"etapa_id": etapa_id}
+    if area_filtro != "Todas":
+        filtros_comp["area"] = area_filtro
+    componentes = listar("componentes", filtros=filtros_comp, orden="nombre")
     if componentes:
-        st.dataframe(pd.DataFrame(componentes)[["nombre", "tipo", "codigo"]],
+        st.dataframe(pd.DataFrame(componentes)[["nombre", "area", "tipo", "codigo"]],
                      use_container_width=True, hide_index=True)
 
     id_sel, actual = _selector_registro(componentes, "nombre", "sel_componente")
 
-    tipos = ["Bomba", "Tuberia", "Separador", "Precalentador", "Valvula", "Motor", "Otro"]
     with st.form("form_componente"):
         nombre = st.text_input("Nombre*", value=actual.get("nombre", ""))
-        tipo = st.selectbox("Tipo", tipos, index=tipos.index(actual["tipo"]) if actual.get("tipo") in tipos else 0)
+        area = st.selectbox("Área (Parte Mecánica / Eléctrica / Neumática / Electrónica)", AREAS,
+                             index=AREAS.index(actual["area"]) if actual.get("area") in AREAS else 0)
+        tipo = st.text_input("Tipo (Bomba, Válvula, Tablero, Sensor, etc.)", value=actual.get("tipo", ""))
         codigo = st.text_input("Código", value=actual.get("codigo", ""))
         descripcion = st.text_area("Descripción", value=actual.get("descripcion", ""))
         imagen_url = st.text_input("URL de imagen de despiece", value=actual.get("imagen_url", ""))
@@ -125,7 +133,7 @@ def gestionar_componentes():
         guardar = c1.form_submit_button("💾 Guardar")
         borrar = c2.form_submit_button("🗑️ Eliminar", disabled=(id_sel is None))
 
-    data = {"etapa_id": etapa_id, "nombre": nombre, "tipo": tipo, "codigo": codigo,
+    data = {"etapa_id": etapa_id, "nombre": nombre, "area": area, "tipo": tipo, "codigo": codigo,
             "descripcion": descripcion, "imagen_url": imagen_url}
 
     if guardar and nombre:
@@ -155,7 +163,11 @@ def gestionar_repuestos():
     etapa_id = st.selectbox("Etapa", [e["id"] for e in etapas],
                              format_func=lambda eid: next(e["nombre"] for e in etapas if e["id"] == eid),
                              key="etapa_para_repuestos")
-    componentes = listar("componentes", filtros={"etapa_id": etapa_id}, orden="nombre")
+    area_filtro = st.selectbox("Área", ["Todas"] + AREAS, key="area_para_repuestos")
+    filtros_comp = {"etapa_id": etapa_id}
+    if area_filtro != "Todas":
+        filtros_comp["area"] = area_filtro
+    componentes = listar("componentes", filtros=filtros_comp, orden="nombre")
     if not componentes:
         st.info("Esta etapa no tiene componentes.")
         return
@@ -182,6 +194,13 @@ def gestionar_repuestos():
         stock_minimo = st.number_input("Stock mínimo", min_value=0.0,
                                         value=float(actual.get("stock_minimo", 0)), step=1.0)
         imagen_url = st.text_input("URL de imagen", value=actual.get("imagen_url", ""))
+        st.caption("Posición sobre la imagen de despiece del componente (opcional, para el punto interactivo):")
+        cpx, cpy = st.columns(2)
+        pos_x = cpx.number_input("Posición X (%)", min_value=0.0, max_value=100.0,
+                                  value=float(actual["pos_x"]) if actual.get("pos_x") is not None else 50.0, step=1.0)
+        pos_y = cpy.number_input("Posición Y (%)", min_value=0.0, max_value=100.0,
+                                  value=float(actual["pos_y"]) if actual.get("pos_y") is not None else 50.0, step=1.0)
+        usar_posicion = st.checkbox("Activar punto interactivo para este repuesto", value=actual.get("pos_x") is not None)
         stock_inicial = None
         if not id_sel:
             stock_inicial = st.number_input(
@@ -193,7 +212,8 @@ def gestionar_repuestos():
 
     data = {"componente_id": componente_id, "nombre": nombre, "tipo": tipo, "codigo": codigo,
             "costo_unitario": costo_unitario, "punto_reorden": punto_reorden, "stock_minimo": stock_minimo,
-            "imagen_url": imagen_url}
+            "imagen_url": imagen_url,
+            "pos_x": pos_x if usar_posicion else None, "pos_y": pos_y if usar_posicion else None}
     if not id_sel:
         data["stock_actual"] = stock_inicial
 
