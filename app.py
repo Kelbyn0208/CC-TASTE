@@ -15,7 +15,9 @@ import ui_despiece
 import ui_reportes
 from db import listar, repuestos_para_reponer
 
-st.set_page_config(page_title="Mantenimiento TASTE", page_icon="⚙️", layout="wide")
+LOGO_PATH = "assets/agromar_logo.png"
+
+st.set_page_config(page_title="Mantenimiento TASTE", page_icon=LOGO_PATH, layout="wide")
 ui_style.inject()
 
 
@@ -27,14 +29,39 @@ def verificar_acceso() -> bool:
     if st.session_state.get("autenticado"):
         return True
 
-    st.markdown("<div class='hero'><h1>Mantenimiento TASTE</h1></div>", unsafe_allow_html=True)
-    clave = st.text_input("Ingresa la clave de acceso", type="password")
-    if st.button("Entrar"):
-        if clave == clave_correcta:
-            st.session_state["autenticado"] = True
-            st.rerun()
-        else:
-            st.error("Clave incorrecta.")
+    # Fondo decorativo difuminado (patrón industrial sutil, no una foto real
+    # todavía). Si tienes una foto propia del TASTE, pásame su URL y la
+    # reemplazo aquí como imagen de fondo real, atenuada con el mismo filtro.
+    st.markdown(
+        """
+        <style>
+        [data-testid="stAppViewContainer"] {
+            background:
+                radial-gradient(circle at 15% 20%, rgba(245,130,30,0.10), transparent 45%),
+                radial-gradient(circle at 85% 75%, rgba(60,139,60,0.10), transparent 45%),
+                var(--background-color);
+        }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    _, col_centro, _ = st.columns([1, 1.1, 1])
+    with col_centro:
+        st.write("")
+        st.write("")
+        st.image(LOGO_PATH, width=160)
+        with st.container(border=True):
+            st.markdown("#### Mantenimiento TASTE")
+            st.caption("Agromar Industrial S.A. · Planta Huacho — Acceso restringido")
+            clave = st.text_input("Clave de acceso", type="password", label_visibility="collapsed",
+                                   placeholder="Ingresa la clave de acceso")
+            if st.button("Entrar", use_container_width=True):
+                if clave == clave_correcta:
+                    st.session_state["autenticado"] = True
+                    st.rerun()
+                else:
+                    st.error("Clave incorrecta.")
     return False
 
 
@@ -47,12 +74,12 @@ PAGINAS = ["Inicio", "Jerarquía", "Kardex", "Mantenimiento", "Despiece", "Repor
 ICONOS = ["house", "diagram-3", "box-seam", "tools", "puzzle", "bar-chart-line"]
 
 with st.sidebar:
-    st.markdown(
-        "<div style='display:flex;align-items:center;gap:10px;margin-bottom:2px;'>"
-        "<span style='font-size:1.5rem;'>⚙️</span>"
-        "<span style='font-size:1.3rem;font-weight:700;'>TASTE</span></div>",
-        unsafe_allow_html=True,
-    )
+    c_logo, c_nombre = st.columns([1, 2.2])
+    with c_logo:
+        st.image(LOGO_PATH, width=48)
+    with c_nombre:
+        st.markdown("<div style='font-size:1.15rem;font-weight:700;padding-top:6px;'>TASTE</div>",
+                     unsafe_allow_html=True)
     st.caption("Agromar Industrial S.A. · Planta Huacho")
     st.write("")
 
@@ -63,16 +90,19 @@ with st.sidebar:
         default_index=0,
         styles={
             "container": {"padding": "0", "background-color": "transparent"},
-            "icon": {"color": "#F2A93B", "font-size": "15px"},
+            "icon": {"color": "var(--primary-color)", "font-size": "15px"},
             "nav-link": {
                 "font-size": "14.5px",
                 "text-align": "left",
                 "margin": "3px 0",
                 "border-radius": "10px",
-                "color": "#E2E8F0",
+                "color": "var(--text-color)",
                 "padding": "10px 12px",
             },
-            "nav-link-selected": {"background-color": "#1E293B", "color": "#F2A93B"},
+            "nav-link-selected": {
+                "background-color": "var(--secondary-background-color)",
+                "color": "var(--primary-color)",
+            },
         },
     )
 
