@@ -48,7 +48,7 @@ def registrar_intervencion():
             horas_parada = st.number_input("Horas de parada", min_value=0.0, value=0.0, step=0.5)
             tecnico = st.text_input("Técnico")
         observaciones = st.text_area("Observaciones")
-        enviado = st.form_submit_button("💾 Guardar intervención")
+        enviado = st.form_submit_button("Guardar intervención")
 
     if enviado:
         intervencion = crear("intervenciones", {
@@ -87,7 +87,7 @@ def listar_intervenciones():
 
     etiquetas = {f"{f['Fecha']} · {f['Etapa']} · {f['Componente']}": f["id"] for f in filas}
     sel = st.selectbox("Selecciona una intervención para eliminar", list(etiquetas.keys()))
-    if st.button("🗑️ Eliminar intervención seleccionada"):
+    if st.button("Eliminar intervención seleccionada"):
         eliminar("intervenciones", etiquetas[sel])
         st.warning("Intervención eliminada. El stock del repuesto usado NO se revierte "
                     "(el repuesto ya salió físicamente); si fue un error, corrígelo desde Kardex.")
@@ -95,7 +95,7 @@ def listar_intervenciones():
 
 
 def render():
-    st.header("🔧 Registro de Mantenimiento")
+    st.header("Registro de Mantenimiento")
     sub = st.tabs(["Nueva intervención", "Ver / eliminar"])
     with sub[0]:
         registrar_intervencion()

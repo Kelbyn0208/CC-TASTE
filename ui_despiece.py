@@ -73,7 +73,7 @@ def _construir_html_despiece(imagen_url: str, puntos: list[dict]) -> str:
 
 
 def render():
-    st.header("🖼️ Despiece interactivo")
+    st.header("Despiece interactivo")
 
     equipos = listar("equipos")
     if not equipos:

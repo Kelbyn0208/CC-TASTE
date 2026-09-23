@@ -51,7 +51,7 @@ def registrar_movimiento():
             motivo = st.text_input("Motivo", placeholder="Compra, ajuste de inventario, etc.")
             documento_referencia = st.text_input("Documento de referencia (OC, OT, etc.)")
         usuario = st.text_input("Registrado por")
-        enviado = st.form_submit_button("💾 Registrar movimiento")
+        enviado = st.form_submit_button("Registrar movimiento")
 
     if enviado:
         crear("kardex_movimientos", {
@@ -64,7 +64,7 @@ def registrar_movimiento():
 
 
 def alertas_reorden():
-    st.markdown("#### ⚠️ Repuestos por reponer")
+    st.markdown("#### Repuestos por reponer")
     datos = repuestos_para_reponer()
     if not datos:
         st.success("Todos los repuestos están por encima de su punto de reorden.")
@@ -98,8 +98,8 @@ def historial_movimientos():
                                         index=0 if mov["tipo_movimiento"] == "ENTRADA" else 1)
         motivo = st.text_input("Motivo", value=mov.get("motivo") or "")
         c1, c2 = st.columns(2)
-        guardar = c1.form_submit_button("💾 Guardar cambios")
-        borrar = c2.form_submit_button("🗑️ Eliminar movimiento")
+        guardar = c1.form_submit_button("Guardar cambios")
+        borrar = c2.form_submit_button("Eliminar movimiento")
 
     if guardar:
         actualizar("kardex_movimientos", mov_id, {
@@ -115,7 +115,7 @@ def historial_movimientos():
 
 
 def render():
-    st.header("📦 Kardex de Repuestos")
+    st.header("Kardex de Repuestos")
     sub = st.tabs(["Registrar movimiento", "Alertas de reorden", "Historial"])
     with sub[0]:
         registrar_movimiento()

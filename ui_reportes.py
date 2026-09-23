@@ -68,7 +68,7 @@ def _a_pdf(df: pd.DataFrame, titulo: str) -> bytes:
 
 
 def render():
-    st.header("📊 Historial y Reportes")
+    st.header("Historial y Reportes")
     sub = st.tabs(["Historial", "Frecuencia de falla por repuesto"])
 
     with sub[0]:
@@ -78,10 +78,10 @@ def render():
         else:
             st.dataframe(df, use_container_width=True, hide_index=True)
             c1, c2 = st.columns(2)
-            c1.download_button("⬇️ Descargar en Excel", data=_a_excel(df),
+            c1.download_button("Descargar en Excel", data=_a_excel(df),
                                 file_name="historial_mantenimiento_taste.xlsx",
                                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-            c2.download_button("⬇️ Descargar en PDF",
+            c2.download_button("Descargar en PDF",
                                 data=_a_pdf(df, "Historial de Mantenimiento - Evaporador TASTE"),
                                 file_name="historial_mantenimiento_taste.pdf", mime="application/pdf")
 

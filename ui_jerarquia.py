@@ -7,9 +7,9 @@ from db import listar, crear, actualizar, eliminar
 
 
 def _selector_registro(registros: list[dict], etiqueta_campo: str, key: str):
-    """Selectbox con la opción '➕ Nuevo' + los registros existentes.
+    """Selectbox con la opción '+ Nuevo' + los registros existentes.
     Devuelve (id_seleccionado_o_None, registro_actual_dict)."""
-    opciones = {"➕ Nuevo": None}
+    opciones = {"+ Nuevo": None}
     opciones.update({r[etiqueta_campo]: r["id"] for r in registros})
     seleccion = st.selectbox("Selecciona para editar (o crea uno nuevo)", list(opciones.keys()), key=key)
     id_sel = opciones[seleccion]
@@ -33,8 +33,8 @@ def gestionar_equipos():
         descripcion = st.text_area("Descripción", value=actual.get("descripcion", ""))
         imagen_url = st.text_input("URL de imagen (Supabase Storage)", value=actual.get("imagen_url", ""))
         c1, c2 = st.columns(2)
-        guardar = c1.form_submit_button("💾 Guardar")
-        borrar = c2.form_submit_button("🗑️ Eliminar", disabled=(id_sel is None))
+        guardar = c1.form_submit_button("Guardar")
+        borrar = c2.form_submit_button("Eliminar", disabled=(id_sel is None))
 
     data = {"nombre": nombre, "fabricante": fabricante, "ubicacion": ubicacion,
             "descripcion": descripcion, "imagen_url": imagen_url}
@@ -73,8 +73,8 @@ def gestionar_etapas():
         descripcion = st.text_area("Descripción", value=actual.get("descripcion", ""))
         imagen_url = st.text_input("URL de imagen", value=actual.get("imagen_url", ""))
         c1, c2 = st.columns(2)
-        guardar = c1.form_submit_button("💾 Guardar")
-        borrar = c2.form_submit_button("🗑️ Eliminar", disabled=(id_sel is None))
+        guardar = c1.form_submit_button("Guardar")
+        borrar = c2.form_submit_button("Eliminar", disabled=(id_sel is None))
 
     data = {"equipo_id": equipo_id, "nombre": nombre, "orden": int(orden),
             "descripcion": descripcion, "imagen_url": imagen_url}
@@ -130,8 +130,8 @@ def gestionar_componentes():
         descripcion = st.text_area("Descripción", value=actual.get("descripcion", ""))
         imagen_url = st.text_input("URL de imagen de despiece", value=actual.get("imagen_url", ""))
         c1, c2 = st.columns(2)
-        guardar = c1.form_submit_button("💾 Guardar")
-        borrar = c2.form_submit_button("🗑️ Eliminar", disabled=(id_sel is None))
+        guardar = c1.form_submit_button("Guardar")
+        borrar = c2.form_submit_button("Eliminar", disabled=(id_sel is None))
 
     data = {"etapa_id": etapa_id, "nombre": nombre, "area": area, "tipo": tipo, "codigo": codigo,
             "descripcion": descripcion, "imagen_url": imagen_url}
@@ -207,8 +207,8 @@ def gestionar_repuestos():
                 "Stock inicial", min_value=0.0, value=0.0, step=1.0,
                 help="Solo se usa al crear. Después, ajusta el stock desde la pestaña Kardex.")
         c1, c2 = st.columns(2)
-        guardar = c1.form_submit_button("💾 Guardar")
-        borrar = c2.form_submit_button("🗑️ Eliminar", disabled=(id_sel is None))
+        guardar = c1.form_submit_button("Guardar")
+        borrar = c2.form_submit_button("Eliminar", disabled=(id_sel is None))
 
     data = {"componente_id": componente_id, "nombre": nombre, "tipo": tipo, "codigo": codigo,
             "costo_unitario": costo_unitario, "punto_reorden": punto_reorden, "stock_minimo": stock_minimo,
@@ -229,7 +229,7 @@ def gestionar_repuestos():
 
 
 def render():
-    st.header("🏗️ Jerarquía del equipo")
+    st.header("Jerarquía del equipo")
     sub = st.tabs(["Equipos", "Etapas", "Componentes", "Repuestos"])
     with sub[0]:
         gestionar_equipos()
